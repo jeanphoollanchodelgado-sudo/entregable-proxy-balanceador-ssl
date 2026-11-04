@@ -1,0 +1,21 @@
+PRUEBA FUNCIONAL - Windows Server / Python 3.13
+
+GET /health
+HTTP/1.1 200 OK
+{"status":"UP","backends":{"http://127.0.0.1:9001":true,"http://127.0.0.1:9002":true}}
+
+GET /demo (solicitudes consecutivas)
+200 OK | X-Backend: http://127.0.0.1:9001 | backend-1
+200 OK | X-Backend: http://127.0.0.1:9002 | backend-2
+200 OK | X-Backend: http://127.0.0.1:9001 | backend-1
+
+PRUEBA DE TOLERANCIA - backend 9002 detenido
+GET /health
+HTTP/1.1 200 OK
+{"status":"UP","backends":{"http://127.0.0.1:9001":true,"http://127.0.0.1:9002":false}}
+
+GET /demo (dos solicitudes)
+200 OK | X-Backend: http://127.0.0.1:9001 | backend-1
+200 OK | X-Backend: http://127.0.0.1:9001 | backend-1
+
+La captura adjunta documenta visualmente la prueba de tolerancia a fallos.
